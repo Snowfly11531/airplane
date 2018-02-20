@@ -1,0 +1,202 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript">
+	    function airplane(){
+		    this.airDiv=document.createElement("div");
+			this.getDiv=function(){
+			    return this.airDiv;
+			}
+			this.getLeft=function(){
+				return parseInt(this.airDiv.style.left.match(/\d+/)[0]);
+			}
+			this.width=document.documentElement.clientWidth || document.body.clientWidth;
+            this.create=function(){
+				this.airDiv.style.position="absolute";
+				this.airDiv.style.height="40px";
+				this.airDiv.style.width="40px";
+				this.airDiv.style.top="562px";
+				this.airDiv.style.left=parseInt(this.width/2)-20+"px";
+				this.airDiv.style.backgroundImage="URL(airplane.jpg)";
+				document.body.appendChild(this.airDiv);
+			}			
+		}
+		function Bullet(){
+		    this.bulDiv=document.createElement("div");
+			this.width=document.documentElement.clientWidth || document.body.clientWidth;
+			this.getDiv=function(){
+			    return this.bulDiv;
+			}
+			this.deleteDiv=function(){
+				document.body.removeChild(this.bulDiv);
+			}
+			this.create=function(){
+			    this.bulDiv.style.position="absolute";
+				this.bulDiv.style.height="20px";
+				this.bulDiv.style.width="2px";
+				this.bulDiv.style.top="542px";
+				this.bulDiv.style.backgroundColor="#000000";
+				this.bulDiv.style.left=airplane1.getLeft()+18+"px";
+				document.body.appendChild(this.bulDiv);
+			}
+		}
+		function enemy(){
+			this.enemyDiv=document.createElement("div");
+			this.width=document.documentElement.clientWidth || document.body.clientWidth;
+			this.getDiv=function(){
+			    return this.enemyDiv;
+			}
+			this.deleteDiv=function(){
+				document.body.removeChild(this.enemyDiv);
+			}
+			this.create=function(){
+			    this.enemyDiv.style.position="absolute";
+				this.enemyDiv.style.height="10px";
+				this.enemyDiv.style.width="10px";
+				this.enemyDiv.style.top="-2px";
+				this.enemyDiv.style.backgroundColor="#000000";
+				this.enemyDiv.style.left=this.width/2-206+parseInt(Math.random()*40)*10+"px";
+				document.body.appendChild(this.enemyDiv);
+			}
+		}
+		function load(){
+			alert("打飞机   开始了！")
+			window.count=0;
+			window.number=document.getElementById("number");
+			number.value=count;
+			window.airplane1=new airplane();
+			airplane1.create();
+			document.onkeydown=function(evt){
+			    var width=document.documentElement.clientWidth || document.body.clientWidth;
+			    var airDiv=airplane1.getDiv();
+				var ev=evt|| event;
+				switch(ev.keyCode){
+					case 39:					    
+						if(parseInt(airDiv.style.left.match(/\d+/)[0])<width/2+180)airDiv.style.left=parseInt(airDiv.style.left.match(/\d+/)[0])+10+"px";
+                        break;
+                    case 37:
+						if(parseInt(airDiv.style.left.match(/\d+/)[0])>width/2-220)airDiv.style.left=airDiv.style.left.match(/\d+/)[0]-10+"px";
+                        break;
+                    default:
+                        break;						
+			    }
+		    }
+			var bulArray=new Array(100000);
+			var eneArray=new Array(100000);
+			var i1=0;
+			var i=0;
+			var k=0;
+			var k1=0;
+			window.hitDiv=new Array(100000);
+			var hitInterval=new Array(100000);
+			var hitDivKey=0;
+			var val1=setInterval(function(){
+				bulArray[i]=new Bullet();
+				bulArray[i].create();
+                i++;				
+			},800);
+			var val2=setInterval(function(){
+				eneArray[i1]=new enemy();
+				eneArray[i1].create();
+				i1++;
+			},2000);
+			var val3=setInterval(function(){
+				var j=k1;
+				var totle=i1;
+				for(;j<totle;j++){
+					var enediv=eneArray[j].getDiv();
+					enediv.style.top=parseInt(enediv.style.top.match(/\d+/)[0])+10+"px";
+					if(enediv.style.top.match(/\d+/)[0]==552){
+						eneArray[j].deleteDiv();
+						k1=j;
+					}
+					
+				}
+			},100);
+			var val4=setInterval(function(){
+				var j=k;
+				var totle=i;
+				for(;j<totle;j++){
+					var buldiv=bulArray[j].getDiv();
+					buldiv.style.top=buldiv.style.top.match(/\d+/)[0]-10+"px";
+					if(buldiv.style.top.match(/\d+/)[0]==2){
+						bulArray[j].deleteDiv();
+						k=j+1;
+					}
+				}
+			},100);
+			var val5=setInterval(function(){
+				var totle=i;
+				var totle1=i1;
+				for(var f=0;f<totle;f++){
+					for(var t=0;t<totle1;t++){
+						var buldiv=bulArray[f].getDiv();
+						var enediv=eneArray[t].getDiv();
+						//alert(parseInt(enediv.style.top.match(/\d+/)[0])+" "+parseInt(buldiv.style.top.match(/\d+/)[0]));
+					    if((parseInt(enediv.style.top.match(/\d+/)[0])==parseInt(buldiv.style.top.match(/\d+/)[0])||parseInt(enediv.style.top.match(/\d+/)[0])+10==parseInt(buldiv.style.top.match(/\d+/)[0]))&&parseInt(enediv.style.left.match(/\d+/)[0])+4==parseInt(buldiv.style.left.match(/\d+/)[0])){
+						    hitDiv[hitDivKey]=document.createElement("div");
+							hitDiv[hitDivKey].style.position="absolute";
+							hitDiv[hitDivKey].style.left=enediv.style.left.match(/\d+/)[0]-5+"px";
+							hitDiv[hitDivKey].style.top=enediv.style.top.match(/\d+/)[0]-5+"px";
+							hitDiv[hitDivKey].style.height="20px";
+							hitDiv[hitDivKey].style.width="20px";
+							hitDiv[hitDivKey].style.backgroundImage="URL(boom.png)";
+							hitDiv[hitDivKey].style.opacity=0;
+							document.body.appendChild(hitDiv[hitDivKey]);
+							var opa=0;
+							var key=hitDivKey;
+							hitInterval[hitDivKey]=setInterval(function(){
+								opa=opa+0.1;
+								if(opa>1){var a=2-opa;}
+								else {var a=opa;}
+								hitDiv[key].style.opacity=a;
+								if(a=0){document.body.removeChild(hitDiv[key]);
+								    clearInterval(hitInterval[key]);
+								}
+							},50);
+							hitDivKey++;
+							bulArray[f].deleteDiv();
+							for(var ff=f;ff<=i;ff++){
+								bulArray[ff]=bulArray[ff+1];
+							}
+							f--;
+							i--;
+							eneArray[t].deleteDiv();
+							for(var tt=t;tt<=i1;tt++){
+								eneArray[tt]=eneArray[tt+1];
+							}
+							t--;
+							i1--;
+                            number.value=++count;							
+						}						
+					}
+				}
+			},100);
+			var time=60;
+			var val6=setInterval(function(){
+				var timer=document.getElementById("timer");
+				timer.value=time;
+				if(time==0){
+					clearInterval(val1);
+					clearInterval(val2);
+					clearInterval(val3);
+					clearInterval(val4);
+					clearInterval(val5);
+					clearInterval(val6);
+					alert("恭喜您！总共击中了"+number.value+"架敌军emmm");
+				}
+				time--;
+			},1000);
+		}
+	</script>
+	<style type="text/css">
+	    body{margin:0px;padding:0px}
+		*{margin:0px;padding:0px}
+	</style>
+</head>
+<body onload="load()" style="font-size:20px;color:#ffcc33">
+    <div style="position:absolute;">总个数：<input id="number" style="border:0px;font-size:20px;color:#ffcc33;margin-top:2px;width:40px"/></div>
+	<div style="position:absolute;right:0px">倒计时:<input id="timer" value="60" style="border:0px;font-size:20px;color:#ffcc33;margin-top:2px;width:40px"></div>
+    <center><div style="height:600px;width:450px;border:3px rgba(0,0,0,0.8) solid;border-radius:10px"></div></center>
+</body>
+</html>
